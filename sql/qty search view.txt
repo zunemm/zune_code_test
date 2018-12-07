@@ -1,0 +1,4 @@
+SELECT *, SUM(qty) AS total_qty FROM invoice_item_info_view GROUP BY invoice_item_info_view.inv_id ORDER BY invoice_item_info_view.invoice_id
+
+SELECT *, SUM(qty * price) AS total_qty FROM invoice_item_inof_view GROUP BY invoice_item_inof_view.inv_id 
+	ORDER BY invoice_item_inof_view.invoice_id

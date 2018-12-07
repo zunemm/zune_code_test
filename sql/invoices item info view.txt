@@ -1,0 +1,5 @@
+SELECT ITF.invoice_item_id, ITF.invoice_id, ITF.invoice_id AS inv_id, I.invoice_name, ITF.item_id, items.item_name, ITF.qty, items.price FROM invoice_item_info AS ITF
+LEFT JOIN invoices I
+ON ITF.invoice_id = I.invoice_id
+LEFT JOIN items 
+ON ITF.item_id = items.item_id
