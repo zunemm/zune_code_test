@@ -2,16 +2,21 @@
 	include("confs/config.php");
 	
 	$conn = mysqli_connect("localhost","root","","june_store");
-	//$invoice_sql = "SELECT * FROM invoices";	
-	//$invoice_result = mysqli_query($conn, $invoice_sql);
-
 	$invoice_item_sql = "SELECT *, SUM(qty * price) AS total_qty FROM invoice_item_inof_view GROUP BY invoice_item_inof_view.inv_id 
 	ORDER BY invoice_item_inof_view.invoice_id";
 	$invoice_item_reult = mysqli_query($conn, $invoice_item_sql);
 
-	$no_of_items_sql = "SELECT * FROM invoice_item_inof_view WHERE invoice_item_inof_view.inv_id = 1";
+	$no_of_items_sql = "SELECT COUNT(inv_id) AS total_items FROM invoice_item_inof_view GROUP BY inv_id";
 	$no_of_items_result = mysqli_query($conn, $no_of_items_sql);
-	$no_of_items = mysqli_num_rows($no_of_items_result);
+
+	$y = 0;
+	$item_count[0] = 0;
+	while($no_of_items_row = mysqli_fetch_assoc($no_of_items_result))
+	{
+		$item_count[$y] = $no_of_items_row['total_items'];
+		$y = $y + 1;
+	}
+	
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,10 +30,6 @@
 		<link rel="stylesheet" type="text/css" href="css/bootstrap-reboot.min.css">
 		<link rel="stylesheet" type="text/css" href="css/1/dataTables.bootstrap4.min.css">
 		<link rel="stylesheet" type="text/css" href="css/1/bootstrap.css">
-		<!-- <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> -->
-		<!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-		<script type="text/javascript" src="pages/row_add.js"></script>-->
 		<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 		<style type="text/css">
 			td
@@ -94,19 +95,15 @@
 						<td></td>
 					</thead>
 					<tbody>
+					<?php	$y = 0; ?>
 						<?php while($invoice_item_row = mysqli_fetch_assoc($invoice_item_reult)): ?>
 						<tr>
 							<td><?php echo $invoice_item_row['invoice_name'] ?></td>
-							
-							<!-- <?php
-								$qty = $invoice_item_row['total_qty'];
-								$price = $invoice_item_row['price'];
-								$total = round($qty * $price); 
-							?> -->
-							<td><?php echo  $no_of_items ?></td>
+							<td><?php echo  $item_count[$y] ?></td>
 							<td><?php echo $invoice_item_row['total_qty'] ?></td>
 							<td><a href="">PDF</a>&nbsp;&nbsp;&nbsp;<a href="">Remove</a></td>
 						</tr>
+						<?php $y = $y + 1; ?>
 					<?php endwhile ?>
 					</tbody>
 					<tfoot style="background-color: AntiqueWhite;">
