@@ -45,13 +45,6 @@
 		<script type="text/javascript" src="js/jquery.js"></script>
 
     <script type="text/javascript">
-    	        /*function getTotal()
-        {
-            var x = document.getElementById("qty").value;
-            var y = document.getElementById("price").value;
-            var total = Number(x) * Number(y);
-            document.getElementById("total").innerHTML = total;
-        }*/
       	function getTotal(rowvalue)
       	{
       		//alert(rowvalue);
@@ -63,7 +56,22 @@
           	//alert(total);
 	        document.getElementById("total" + rowvalue).innerHTML = total;
 	        document.getElementById("sample").value = rowvalue + 1;
-	        document.getElementById("subtotal").innerHTML = total;
+	        if(rowvalue == 0)
+	        {
+	        	document.getElementById("subtotal").innerHTML = total;
+	        }
+	        var total_value = new Array();
+	        for(var i=0; i <= rowvalue; i++)
+	        {
+	        	total_value[i] = Number(document.getElementById("total" + i).innerHTML);
+	        }
+	        var subtotal = 0;
+	        for(var j=0; j <= rowvalue; j++)
+	        {
+	        	subtotal += (total_value[j]);
+	        }
+	        //alert(subtotal);
+	        document.getElementById("subtotal").innerHTML = subtotal;
 	        var subtotal = Number(document.getElementById("subtotal").innerHTML);
            
            var tax = subtotal / 100;
@@ -72,7 +80,41 @@
            var alltotal = subtotal + tax;
            document.getElementById("alltotal").innerHTML = alltotal;
       	}
-      
+      function getTotal1(rowvalue)
+      	{
+      		//alert(rowvalue);
+      		var x = document.getElementById("qty_up" + rowvalue).value;
+      		//alert(x);
+          	var y = document.getElementById("price_up" + rowvalue).value;
+          	//alert(y);
+          	var total = Number(x) * Number(y);
+          	//alert(total);
+	        document.getElementById("total_up" + rowvalue).innerHTML = total;
+	        document.getElementById("sample_up").value = rowvalue + 1;
+	        if(rowvalue == 0)
+	        {
+	        	document.getElementById("subtotal_up").innerHTML = total;
+	        }
+	        var total_value1 = new Array();
+	        for(var i=0; i <= rowvalue; i++)
+	        {
+	        	total_value1[i] = Number(document.getElementById("total_up" + i).innerHTML);
+	        }
+	        var subtotal = 0;
+	        for(var j=0; j <= rowvalue; j++)
+	        {
+	        	subtotal += (total_value1[j]);
+	        }
+	        //alert(subtotal);
+	        document.getElementById("subtotal_up").innerHTML = subtotal;
+	        var subtotal = Number(document.getElementById("subtotal_up").innerHTML);
+           
+           var tax = subtotal / 100;
+           document.getElementById("tax_up").value = tax;
+
+           var alltotal = subtotal + tax;
+           document.getElementById("alltotal_up").innerHTML = alltotal;
+      	}
 
       </script>
 	</head>
@@ -100,7 +142,7 @@
 						<tr>
 							<td><?php echo $invoice_item_row['invoice_name'] ?></td>
 							<td><?php echo  $item_count[$y] ?></td>
-							<td><?php echo $invoice_item_row['total_qty'] ?></td>
+							<td><?php echo round($invoice_item_row['total_qty']) ?></td>
 							<td><a href="">PDF</a>&nbsp;&nbsp;&nbsp;<a href="">Remove</a></td>
 						</tr>
 						<?php $y = $y + 1; ?>
@@ -127,7 +169,7 @@
 				<form action="pages/invoice_add.php" method="post" enctype="multipart/form-data" id="">
 					<input type="hidden" name="sample" id="sample">
 					<label>Invoice Name</label>
-					<input type="text" name="invoice_name" id="invoice_name">
+					<input type="text" name="invoice_name" id="invoice_name" required>
 					<br>
 
 					<table width="100%" id="myTable" class=" table order-list">
@@ -139,18 +181,20 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td><input type="text" name="item_name0" oninput="" id="item_name0"></td>
-							<td><input type="text" name="qty0" id="qty0"></td>
-							<td><input type="text" name="price0" id="price0" oninput="getTotal(0)"></td>
+							<td><input type="text" name="item_name0" oninput="" id="item_name0" required></td>
+							<td><input type="text" name="qty0" id="qty0" required></td>
+							<td><input type="text" name="price0" id="price0" oninput="getTotal(0)" required></td>
 							<td><label id="total0"></label></td>
-							<td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td>
+							<!-- <td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td> -->
+							<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
 						</tr>
 						<tr>
-							<td><input type="text" name="item_name1" id="item_name1"></td>
-							<td><input type="text" name="qty1" id="qty1"></td>
-							<td><input type="text" name="price1" id="price1" oninput="getTotal(1)"></td>
+							<td><input type="text" name="item_name1" id="item_name1" required></td>
+							<td><input type="text" name="qty1" id="qty1" required></td>
+							<td><input type="text" name="price1" id="price1" oninput="getTotal(1)" required></td>
 							<td><label id="total1"></label></td>
-							<td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td>
+							<!-- <td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td> -->
+							<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
 						</tr>
 					</table>
 					<table width="100%">
@@ -167,12 +211,12 @@
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: right;">Tax</td>
-							<td><input type="text" name="" style="width: 50px;" id="tax"></td>
+							<td><input type="text" name="tax" style="width: 50px;" id="tax"></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: right;">Total</td>
-							<td><label id="alltotal"></label></td>
+							<td><label id="alltotal" name="alltotal"></label></td>
 							<td></td>
 						</tr>
 					</table>
@@ -190,11 +234,12 @@
 			<div style="width: 25%; float: left; background-color: White; color: White;">a</div>
 			<div style="width: 50%; float: left; background-color: White;">
 				<form action="pages/invoice_update.php" method="post" enctype="multipart/form-data" id="">
+				<input type="hidden" name="sample_up" id="sample_up">
 					<label>Invoice Name</label>
-					<input type="text" name="" id="">
+					<input type="text" name="" id="" value="<?php echo $invoice_item_row['invoice_name'] ?>" required>
 					<br>
 					<!-- <div class="container"> -->
-					<table width="100%" id="updateinv">
+					<table width="100%" id="myTable" class=" table order-list1">
 						<tr>
 							<td>Item Name</td>
 							<td># of items</td>
@@ -203,35 +248,42 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td><input type="text" name="item_name"></td>
-							<td><input type="text" name="qty"></td>
-							<td><input type="text" name="price"></td>
-							<td><label>###</label></td>
-							<td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td>
+							<td><input type="text" name="item_name_up0" id="item_name_up0" required></td>
+							<td><input type="text" name="qty_up0" id="qty_up0" required></td>
+							<td><input type="text" name="price_up0" id="price_up0" oninput="getTotal1(0)" required></td>
+							<td><label id="total_up0"></label></td>
+							<!-- <td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td> -->
+							<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
 						</tr>
 						<tr>
-							<td><input type="text" name="item_name"></td>
-							<td><input type="text" name="qty"></td>
-							<td><input type="text" name="price"></td>
-							<td><label>###</label></td>
-							<td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td>
+							<td><input type="text" name="item_name_up1" id="item_name_up1" required></td>
+							<td><input type="text" name="qty_up1" id="qty_up1" required></td>
+							<td><input type="text" name="price_up1" id="price_up1" oninput="getTotal1(1)" required></td>
+							<td><label id="total_up1"></label></td>
+							<!-- <td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td> -->
+							<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
 						</tr>
+					</table>
+					<table width="100%">
 						<tr>
-							<td colspan="5"><button>+ Add Item</button></td>
+							<td colspan="5">
+							<input type="button" class="btn btn-lg btn-block " id="addrow1" value="+ Add Item" 
+							style="background-color: White; width: 110px; height: 30px; font-size: 16px; border-color: grey; text-align: Center;" />
+							</td>
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: right;">Sub Total</td>
-							<td>###</td>
+							<td><label id="subtotal_up"></label></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: right;">Tax</td>
-							<td><input type="text" name="" style="width: 50px;"></td>
+							<td><input type="text" name="tax_up" style="width: 50px;" id="tax_up"></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td colspan="3" style="text-align: right;">Total</td>
-							<td>###</td>
+							<td><label id="alltotal_up" name="alltotal_up"></td>
 							<td></td>
 						</tr>
 					</table>
