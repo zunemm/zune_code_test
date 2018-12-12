@@ -115,7 +115,10 @@
            var alltotal = subtotal + tax;
            document.getElementById("alltotal_up").innerHTML = alltotal;
       	}
-
+      	function setfocus() 
+      	{
+      		document.getElementById("invoice_name").focus();
+      	}
       </script>
 	</head>
 	<body>
@@ -125,7 +128,7 @@
 		<div>
 			<h2 style="text-align: left; margin-left: 340px;">Invoice List</h2>
 			<div style="margin-left: 890px;">
-				<button>+ Add Invoice</button>
+				<button onclick="setfocus()">+ Add Invoice</button>
 			</div>	
 			<div style="width: 25%; float: left; background-color: White; color: White;">a</div>
 			<div style="width: 50%; float: left; background-color: White;">
@@ -140,7 +143,7 @@
 					<?php	$y = 0; ?>
 						<?php while($invoice_item_row = mysqli_fetch_assoc($invoice_item_reult)): ?>
 						<tr>
-							<td><?php echo $invoice_item_row['invoice_name'] ?></td>
+							<td><a href="#upinv"><?php echo $invoice_item_row['invoice_name'] ?></a></td>
 							<td><?php echo  $item_count[$y] ?></td>
 							<td><?php echo round($invoice_item_row['total_qty']) ?></td>
 							<td><a href="">PDF</a>&nbsp;&nbsp;&nbsp;<a href="">Remove</a></td>
@@ -166,7 +169,7 @@
 			<h2  style="text-align: left; margin-left: 340px;">New Invoice</h2>
 			<div style="width: 25%; float: left; background-color: White; color: White;">a</div>
 			<div style="width: 50%; float: left; background-color: White;">
-				<form action="pages/invoice_add.php" method="post" enctype="multipart/form-data" id="">
+				<form action="pages/invoice_add.php" method="post" enctype="multipart/form-data" id="newinv">
 					<input type="hidden" name="sample" id="sample">
 					<label>Invoice Name</label>
 					<input type="text" name="invoice_name" id="invoice_name" required>
@@ -233,10 +236,17 @@
 			<h2  style="text-align: left; margin-left: 340px;">Update Invoice</h2>
 			<div style="width: 25%; float: left; background-color: White; color: White;">a</div>
 			<div style="width: 50%; float: left; background-color: White;">
-				<form action="pages/invoice_update.php" method="post" enctype="multipart/form-data" id="">
+				<form action="pages/invoice_update.php" method="post" enctype="multipart/form-data" id="upinv">
+				<?php 
+					$invoice_sql = "SELECT * FROM `invoice_item_inof_view` where invoice_id = 1";
+					$invoice_reult = mysqli_query($conn, $invoice_sql);	
+					$invoice_reult1 = mysqli_query($conn, $invoice_sql);	
+					$invoice_row1 = mysqli_fetch_assoc($invoice_reult1);
+				?>
+				
 				<input type="hidden" name="sample_up" id="sample_up">
 					<label>Invoice Name</label>
-					<input type="text" name="" id="" value="<?php echo $invoice_item_row['invoice_name'] ?>" required>
+					<input type="text" name="" id="" value="<?php echo $invoice_row1['invoice_name'] ?>" required>
 					<br>
 					<!-- <div class="container"> -->
 					<table width="100%" id="myTable" class=" table order-list1">
@@ -247,14 +257,17 @@
 							<td>Total</td>
 							<td></td>
 						</tr>
-						<tr>
-							<td><input type="text" name="item_name_up0" id="item_name_up0" required></td>
-							<td><input type="text" name="qty_up0" id="qty_up0" required></td>
-							<td><input type="text" name="price_up0" id="price_up0" oninput="getTotal1(0)" required></td>
-							<td><label id="total_up0"></label></td>
+						<?php while($invoice_row = mysqli_fetch_assoc($invoice_reult)): ?>
+						<tr>							
+							<td><input type="text" name="item_name_up0" id="item_name_up0" value="<?php echo $invoice_row['item_name'] ?>"required></td>
+						
+							<td><input type="text" name="qty_up0" id="qty_up0" value="<?php echo $invoice_row['qty'] ?>" required></td>
+							<td><input type="text" name="price_up0" id="price_up0" value="<?php echo $invoice_row['price'] ?>" oninput="getTotal1(0)" required></td>
+							<td><label id="total_up0"><?php echo $invoice_row['price'] * $invoice_row['qty'] ?></label></td>
 							<!-- <td><a href=""><img src="images/trash-can-icon-png.png" style="width: 30px; height: 20px;"></a></td> -->
 							<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
 						</tr>
+						<?php endwhile ?>
 						<tr>
 							<td><input type="text" name="item_name_up1" id="item_name_up1" required></td>
 							<td><input type="text" name="qty_up1" id="qty_up1" required></td>
